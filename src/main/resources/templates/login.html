@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ListTask</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.1.1/css/all.min.css" integrity="sha512-ioRJH7yXnyX+7fXTQEKPULWkMn3CqMcapK0NNtCN8q//sW7ZeVFcbMJ9RvX99TwDg6P8rAH2IqUSt2TLab4Xmw==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+<div class="container text-center">
+    <div class="pt-5">
+        <h1>Welcome</h1>
+    </div>
+    <div>
+        <form th:action="@{/login_success}" th:object="${userDTO}" method="POST"
+              style="max-width: 600px; margin: 0 auto;">
+            <div class="m-3">
+                <div class="form-group row">
+                    <label class="col-form-label col-4">
+                        Email:
+                    </label>
+                    <div class="col-7">
+                        <input type="email" class="form-control" name="username" th:filed="*{email}"  required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-4">
+                        Password:
+                    </label>
+                    <div class="col-7">
+                        <input type="password" class="form-control" name="password" th:filed="*{password}"  required>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary" style="margin-right: 90px">
+                        Sign Up
+                    </button>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+    <div>
+        <h4><a th:href="@{/register}" style="margin-right: 90px">Register</a></h4>
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+</script>
+</body>
+</html>
