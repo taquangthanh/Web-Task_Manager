@@ -32,6 +32,7 @@ public class LoginController {
     private String login(@ModelAttribute("userDTO") UserDTO userDTO, BindingResult result, Model model){
         if (result.hasErrors()){
             model.addAttribute("userDTO",userDTO);
+            System.out.println("Khong co gi");
             result.toString();
             return "login";
         }
@@ -42,9 +43,9 @@ public class LoginController {
 //            model.addAttribute("admin",admin);
             return "redirect:/tasklist";
         }
-        return "login";
+        return "redirect:";
     }@PostMapping("/register-new")
-    private String newUser(@ModelAttribute("userDTO") UserDTO userDTO, BindingResult result, Model model){
+    private String newUser( @ModelAttribute("userDTO") UserDTO userDTO, BindingResult result, Model model){
         if (result.hasErrors()){
             model.addAttribute("userDTO",userDTO);
             result.toString();
@@ -57,7 +58,7 @@ public class LoginController {
 //            model.addAttribute("admin",admin);
             return "register";
         }
-        if (userDTO.getPassword().equals(userDTO.getRepeatPassword())){
+        if (userDTO.getPassword().equalsIgnoreCase(userDTO.getRepeatPassword())){
             userService.save(userDTO);
             model.addAttribute("userDTO", userDTO);
             System.out.println("Successfully");
