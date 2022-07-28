@@ -4,6 +4,7 @@ import com.example.web_task_manager.dto.request.UserDTO;
 import com.example.web_task_manager.entity.User;
 import com.example.web_task_manager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("")
+@RequestMapping("/login")
 public class LoginController {
     @Autowired
     private UserService userService;
@@ -36,9 +37,9 @@ public class LoginController {
             result.toString();
             return "login";
         }
-        User user = userService.findByMail(userDTO.getEmail());
+        User user = userService.findByMail(userDTO.getUsername());
         System.out.println(user);
-        if(user!=null){
+        if(user.getPassword().equals(userDTO.getPassword())){
             System.out.println("Đăng nhập thành công");
 //            model.addAttribute("admin",admin);
             return "redirect:/tasklist";
@@ -51,7 +52,7 @@ public class LoginController {
             result.toString();
             return "register";
         }
-        User user = userService.findByMail(userDTO.getEmail());
+        User user = userService.findByMail(userDTO.getUsername());
         System.out.println(user);
         if(user!=null){
             System.out.println("Email đã được sử dụnng");
@@ -59,6 +60,8 @@ public class LoginController {
             return "register";
         }
         if (userDTO.getPassword().equalsIgnoreCase(userDTO.getRepeatPassword())){
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            userDTO.setPassword(encoder.encode(userDTO.getPassword()));
             userService.save(userDTO);
             model.addAttribute("userDTO", userDTO);
             System.out.println("Successfully");

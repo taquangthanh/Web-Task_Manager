@@ -14,7 +14,7 @@
         <h1>User Registration - Sign Up</h1>
     </div>
     <div>
-        <form th:action="@{/register-new}" th:object="${userDTO}" method="POST"
+        <form th:action="@{/login/register-new}" th:object="${userDTO}" method="POST"
               style="max-width: 600px; margin: 0 auto;">
             <div class="m-3">
                 <div class="form-group row">
@@ -43,10 +43,10 @@
                 </div>
                 <div class="form-group row">
                     <label class="col-form-label col-4">
-                        Email
+                        Username
                     </label>
                     <div class="col-7">
-                        <input type="email" class="form-control" th:feild="*{email}" name="email" id="email" required>
+                        <input type="email" class="form-control" th:feild="*{username}" name="username" id="username" required>
                     </div>
                 </div>
                 <div>
@@ -77,11 +77,11 @@
             console.log("Email sai");
             alert("Email sai")
         }
-        if(pass<8 || pass>256){
+        if(pass<5 || pass>256){
             console.log("pass sai");
             alert("pass sai")
         }
-        if(repeatPassword<10 || repeatPassword>256){
+        if(repeatPassword<5 || repeatPassword>256){
             console.log("repeatPassword sai");
             alert("repeatPassword sai")
         }

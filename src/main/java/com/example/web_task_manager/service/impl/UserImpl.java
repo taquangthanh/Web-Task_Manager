@@ -5,12 +5,16 @@ import com.example.web_task_manager.entity.User;
 import com.example.web_task_manager.repository.RoleResponsitory;
 import com.example.web_task_manager.repository.UserRepository;
 import com.example.web_task_manager.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 
 @Service
+@RequiredArgsConstructor
 public class UserImpl implements UserService {
 
     @Autowired
@@ -19,14 +23,14 @@ public class UserImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public User findByMail(String email) {
-        return userRepository.findByEmail(email);
+    public User findByMail(String username) {
+        return userRepository.findByUsername(username);
     }
 
     @Override
     public User save(UserDTO userDTO) {
         User user = new User();
-        user.setEmail(userDTO.getEmail());
+        user.setUsername(userDTO.getUsername());
         user.setName(userDTO.getName());
         user.setPassword(userDTO.getPassword());
         user.setRoles(Arrays.asList(roleResponsitory.findByName("ADMIN")));
