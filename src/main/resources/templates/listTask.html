@@ -7,36 +7,25 @@
 </head>
 <body>
 <div class="container">
-    <form action="/water/deleteList" method="get">
         <div class="card">
             <div class="card-header">
                 <div class="row d-flex justify-content-between">
                     <div class="col-3 fs-5">Web Task Manager</div>
-                    <div class="col-2">
-                        <a class="btn btn-success ml-5" href="/water/add">Add</a>
-                        <!-- Modal -->
-                        <div class="modal fade" id="delete" tabindex="-1" role="dialog"
-                             aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
-                                        <button type="button" class="close" data-dismiss="modal"
-                                                aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">Are you sure that you want to
-                                        delete all clothes are choosed?</div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-danger">Yes</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
+                    <div class="col-3 ps-4">
+                        <form th:action="@{/tasklist}">
+                            <input type="text" name="title" id="title">
+                            <button class="btn btn-primary" type="submit">Search</button>
+                        </form>
+                    </div>
+                    <div class="col-3">
+                        <form>
+                            <select onchange="this.form.submit()" class="" aria-label="Default select example" th:name="status">
+                                <option value="">All Task</option>
+                                <option value="Open">Open</option>
+                                <option value="InProgress">In Process</option>
+                                <option value="Done">Done</option>
+                            </select>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -98,7 +87,7 @@
                     <a class="btn btn-primary mr-1 ${currentPage==0?'disabled':'' }" th:href="@{/tasklist?page=0}"
                     > <span
                             class="fas fa-backward"></span>
-                    </a> <a class="btn btn-primary mr-1 ${currentPage==0?'disabled':'' }" th:href="@{/tasklist(page=${currentPage - 1})}"
+                    </a> <a class="btn btn-primary mr-1 ${currentPage==0?'disabled':'' }" th:href="@{/tasklist(name=${title},page=${currentPage - 1})}"
                 > <span
                         class="fas fa-backward-step"></span>
                 </a>
@@ -116,5 +105,6 @@
         </div>
     </form>
 </div>
+
 </body>
 </html>

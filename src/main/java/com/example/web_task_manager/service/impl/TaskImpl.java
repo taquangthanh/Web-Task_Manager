@@ -46,7 +46,12 @@ public class TaskImpl implements TaskService {
 
     @Override
     public Page<TaskEntity> getByTitle(String title, Integer page) {
-        return taskRepository.findByTitle(title, PageRequest.of(page, 5));
+        return taskRepository.findByTitle("%" + title + "%", PageRequest.of(page, 5));
+    }
+
+    @Override
+    public Page<TaskEntity> getByStatus(String status, Integer page) {
+        return taskRepository.findByStatus("%" + status + "%", PageRequest.of(page, 5));
     }
 
     @Override

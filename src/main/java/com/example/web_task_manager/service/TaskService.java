@@ -12,5 +12,6 @@ public interface TaskService {
     TaskEntity updateTask(TaskRequest taskRequest);
     TaskEntity deleteTask(Long id);
     Page<TaskEntity> getByTitle(String title, Integer page);
+    Page<TaskEntity> getByStatus(String status, Integer page);
     Page<TaskEntity> getByFlag(Integer page);
 }

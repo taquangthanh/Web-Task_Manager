@@ -13,9 +13,12 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<TaskEntity,Long> {
 
-    @Query("SELECT c FROM TaskEntity c WHERE c.title = ?1")
+
     Page<TaskEntity> findByTitle(String title, Pageable pageable);
 
     @Query("SELECT c FROM TaskEntity c WHERE c.deleteFlag = ?1")
     Page<TaskEntity> findByDeleteFlag(Boolean flag, Pageable pageable);
+
+
+    Page<TaskEntity> findByStatus(String status, Pageable pageable);
 }

@@ -21,7 +21,7 @@ public class LoginController {
 
     @GetMapping("")
     private String showLogin(Model model){
-        model.addAttribute("userDTO",new UserDTO());
+//        model.addAttribute("userDTO",new UserDTO());
         return "login";
     }
     @GetMapping("/register")
@@ -29,23 +29,24 @@ public class LoginController {
         model.addAttribute("userDTO",new UserDTO());
         return "register";
     }
-    @PostMapping("/login_success")
-    private String login(@ModelAttribute("userDTO") UserDTO userDTO, BindingResult result, Model model){
-        if (result.hasErrors()){
-            model.addAttribute("userDTO",userDTO);
-            System.out.println("Khong co gi");
-            result.toString();
-            return "login";
-        }
-        User user = userService.findByMail(userDTO.getUsername());
-        System.out.println(user);
-        if(user.getPassword().equals(userDTO.getPassword())){
-            System.out.println("Đăng nhập thành công");
-//            model.addAttribute("admin",admin);
-            return "redirect:/tasklist";
-        }
-        return "redirect:";
-    }@PostMapping("/register-new")
+//    @PostMapping("/login_success")
+//    private String login(@ModelAttribute("userDTO") UserDTO userDTO, BindingResult result, Model model){
+//        if (result.hasErrors()){
+//            model.addAttribute("userDTO",userDTO);
+//            System.out.println("Khong co gi");
+//            result.toString();
+//            return "login";
+//        }
+//        User user = userService.findByMail(userDTO.getUsername());
+//        System.out.println(user);
+//        if(user.getPassword().equals(userDTO.getPassword())){
+//            System.out.println("Đăng nhập thành công");
+////            model.addAttribute("admin",admin);
+//            return "redirect:/tasklist";
+//        }
+//        return "redirect:";
+//    }
+    @PostMapping("/register-new")
     private String newUser( @ModelAttribute("userDTO") UserDTO userDTO, BindingResult result, Model model){
         if (result.hasErrors()){
             model.addAttribute("userDTO",userDTO);

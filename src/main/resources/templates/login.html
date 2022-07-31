@@ -17,7 +17,7 @@
         <h1>Welcome</h1>
     </div>
     <div>
-        <form th:action="@{/login/login-succcess}" th:object="${userDTO}" method="POST"
+        <form th:action="@{/login-check}" method="post"
               style="max-width: 600px; margin: 0 auto;">
             <div class="m-3">
                 <div class="form-group row">
@@ -25,7 +25,7 @@
                         Email:
                     </label>
                     <div class="col-7">
-                        <input type="email" class="email form-control" name="username" th:field="*{username}"  id="username" required>
+                        <input type="email" class="email form-control" name="username"  id="username" required>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -33,12 +33,12 @@
                         Password:
                     </label>
                     <div class="col-7">
-                        <input type="password" class="pass form-control" name="password" th:field="*{password}" id="password" required>
+                        <input type="password" class="pass form-control" name="password"  id="password" required>
                     </div>
                 </div>
                 <p id="demo"></p>
                 <div>
-                    <button type="submit" class="btn btn-primary" style="margin-right: 90px">
+                    <button type="submit" class="btn btn-primary"onclick="login()" style="margin-right: 90px">
                         Sign Up
                     </button>
                 </div>
@@ -66,19 +66,27 @@
             alert("pass sai")
         }
     }
-    // function login(){
-    //     let email = $('#username').val()
-    //     let pass = $('#password').val()
-    //     let text
-    //     if(email<3 || email>256){
-    //         console.log("Email sai");
-    //         return false;
-    //     }
-    //     if(pass<8 || pass>256){
-    //         console.log("pass sai");
-    //         return false;
-    //     }
-    // }
+    function login(){
+        let email = $('#username').val();
+        let password = $('#password').val();
+        let data = {
+            "email" : email,
+            "password" : password,
+        }
+        $.ajax({
+            url: '/api/login',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (result) {
+                alert("Bạn đã đăng ký thành công")
+            },
+            error: function (error) {
+                alert("Lỗi hệ thống, vui lòng thử lại sau")
+            }
+        })
+    }
+
 </script>
 </body>
 </html>
