@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 @Service
 public interface TaskService {
     TaskEntity addTask(TaskRequest taskRequest);
-    TaskEntity updateTask(TaskRequest taskRequest);
+    TaskEntity updateTask(Long id,TaskRequest taskRequest);
     TaskEntity deleteTask(Long id);
-    Page<TaskEntity> getByTitle(String title, Integer page);
-    Page<TaskEntity> getByStatus(String status, Integer page);
-    Page<TaskEntity> getByFlag(Integer page);
+    TaskEntity getById(Long id);
+    Page<TaskEntity> getTasksByTitle(String title, Integer page);
+    Page<TaskEntity> getTasksByStatus(String status, Integer page);
+    Page<TaskEntity> getTasksByFlag(Integer page);
 }

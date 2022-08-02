@@ -3,108 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <title>Web Task Manager</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
 <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <div class="row d-flex justify-content-between">
-                    <div class="col-3 fs-5">Web Task Manager</div>
-                    <div class="col-3 ps-4">
-                        <form th:action="@{/tasklist}">
-                            <input type="text" name="title" id="title">
-                            <button class="btn btn-primary" type="submit">Search</button>
-                        </form>
-                    </div>
-                    <div class="col-3">
-                        <form>
-                            <select onchange="this.form.submit()" class="" aria-label="Default select example" th:name="status">
-                                <option value="">All Task</option>
-                                <option value="Open">Open</option>
-                                <option value="InProgress">In Process</option>
-                                <option value="Done">Done</option>
-                            </select>
-                        </form>
-                    </div>
-                </div>
+    <div class="card">
+        <div class="card-header">
+            <div class="col-3 fs-5">Web Task Manager
+                <span th:text="${userLogined.name }"></span>
+                <a th:href="@{/logout}" type="submit">Logout</a>
             </div>
-            <div class="card-body">
-                <table class="table table-hover m-0 p-0">
-                    <thead>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th colspan="3">Activity</th>
-                    </thead>
-                    <tbody>
-                        <tr th:each="task,iState:${listtask}">
-                            <td th:utext="${task.title }">Name</td>
-                            <td th:utext="${task.status }">Name</td>
-                            <td><a class="btn btn-warning"
-                                   th:href="@{/task/edit(id=${task.id })}"> <i
-                                    class="fa-solid fa-pen">Edit</i>
-                            </a></td>
-                            <td><a class="btn btn-primary"
-                                   th:href="@{/task/show(id=${task.id })}"> <i
-                                    class="fa-solid fa-pen">Chi tiết</i>
-                            </a></td>
-                            <td>
-                                <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-danger"
-                                        data-toggle="modal" data-target="#exampleModal${water.id }">
-                                    <i class="fa-solid fa-recycle">Delete</i>
-                                </button> <!-- Modal -->
-                                <div class="modal fade" id="exampleModal${water.id }"
-                                     tabindex="-1" role="dialog"
-                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
-                                                    <span aria-hidden="true"></span>
-                                                </button>
+            <div class="row d-flex justify-content-between">
+                <button class="col-2 btn btn-primary" style="width: 150px">Export CSV</button>
+                <div class="col-2 btn-add" style="width: 150px">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                            data-bs-target="#exampleModalAdd">
+                        <i class="material-icons">&#xE147;</i>Add
+                    </button>
+                    <!--Add Modal -->
+                    <div class="modal fade" id="exampleModalAdd" tabindex="-1" aria-labelledby="exampleModalLabelAdd"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabelAdd">Create Task</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form th:action="@{/tasklist/create-task}" th:object="${taskRequest}" method="GET"
+                                          style="max-width: 600px; margin: 0 auto;">
+                                        <div class="m-3">
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-4">
+                                                    Title:
+                                                </label>
+                                                <div class="col-7">
+                                                    <input type="text" class="form-control" th:field="*{title}"
+                                                           name="title" required>
+                                                </div>
                                             </div>
-                                            <div class="modal-body">Are you sure that you want to
-                                                delete this clothes?</div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                        data-dismiss="modal">Close</button>
-                                                <a class="btn btn-danger"
-                                                   th:href="@{/task/delete(id=${task.id })}"> Yes </a>
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-4">
+                                                    Content:
+                                                </label>
+                                                <div class="col-7">
+                                                    <input type="text" class="form-control" th:feild="*{content}"
+                                                           name="content" required>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-form-label col-4">
+                                                    Status:
+                                                </label>
+                                                <select name="status">
+                                                    <option value="Open">Open</option>
+                                                    <option value="InProgress">In Progress</option>
+                                                    <option value="Done">Done</option>
+                                                </select>
                                             </div>
                                         </div>
-                                    </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <button type="submit"
+                                                    class="btn btn-primary">Add
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="card-footer">
-                <div class="d-flex justify-content-center">
-                    <a class="btn btn-primary mr-1 ${currentPage==0?'disabled':'' }" th:href="@{/tasklist?page=0}"
-                    > <span
-                            class="fas fa-backward"></span>
-                    </a> <a class="btn btn-primary mr-1 ${currentPage==0?'disabled':'' }" th:href="@{/tasklist(name=${title},page=${currentPage - 1})}"
-                > <span
-                        class="fas fa-backward-step"></span>
-                </a>
-                    <h3 th:utext="${currentPage+1 }"></h3> <h3>/</h3>
-                    <h3 th:utext="${maxPage }"></h3>
-                    <a class="btn btn-primary mr-1 ${currentPage==maxPage-1?'disabled':'' }" th:href="@{/tasklist(page=${currentPage + 1})}"
-                    > <span
-                            class="fas fa-forward-step"></span>
-                    </a> <a class="btn btn-primary ${currentPage==maxPage-1?'disabled':'' }" th:href="@{/tasklist(page=${maxPage - 1 })}"
-                > <span
-                        class="fas fa-forward"></span>
-                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3 ps-4">
+                    <form th:action="@{/tasklist}">
+                        <input type="text" name="title" id="title">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </form>
+                </div>
+                <div class="col-3">
+                    <form>
+                        <select onchange="this.form.submit()" class="" aria-label="Default select example"
+                                th:name="status">
+                            <option value="">All Task</option>
+                            <option value="Open">Open</option>
+                            <option value="InProgress">In Process</option>
+                            <option value="Done">Done</option>
+                        </select>
+                    </form>
                 </div>
             </div>
         </div>
+        <div class="card-body">
+            <table class="table table-hover m-0 p-0">
+                <thead>
+                <th>Title</th>
+                <th>Status</th>
+                <th colspan="3">Activity</th>
+                </thead>
+                <tbody>
+                <tr th:each="task,iState:${listtask}">
+                    <td th:utext="${task.title }">Name</td>
+                    <td th:utext="${task.status }">Name</td>
+                    <td>
+                        <a th:href="@{/tasklist/edit(id=${task.id })}" type="button" class="btn btn-primary">
+                            Edit
+                        </a>
+                    </td>
+                    <td><!-- Button trigger modal -->
+                        <a th:href="@{/tasklist/detail(id=${task.id })}" type="button" class="btn btn-primary"
+                           data-bs-toggle="modal"
+                           data-bs-target="#staticBackdrop">
+                            Detail
+                        </a>
+
+                        <!-- Detail Modal -->
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Detail Task</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h2 th:utext="${task.title }"></h2><br>
+                                        <h2 th:utext="${task.status }"></h2><br>
+                                        <h2 th:utext="${task.content }"></h2>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                        </button>
+                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#exampleModalDelete">
+                            Delete
+                        </button>
+
+                        <!--Delete Modal -->
+                        <div class="modal fade" id="exampleModalDelete" tabindex="-1"
+                             aria-labelledby="exampleModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Confirm Delete</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        You sure delete it ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                        </button>
+                                        <a th:href="@{/tasklist/delete(id=${task.id })}" type="button"
+                                           class="btn btn-primary">Right</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-center">
+                <a class="btn btn-primary mr-1 ${currentPage==0?'disabled':'' }" th:href="@{/tasklist?page=0}"
+                > <span
+                        class="fas fa-backward"><<</span>
+                </a> <a class="btn btn-primary mr-1 ${currentPage==0?'disabled':'' }"
+                        th:href="@{/tasklist(name=${title},page=${currentPage - 1})}"
+            > <span
+                    class="fas fa-backward-step"><</span>
+            </a>
+                <h3 th:utext="${currentPage+1 }"></h3>
+                <h3>/</h3>
+                <h3 th:utext="${maxPage }"></h3>
+                <a class="btn btn-primary mr-1 ${currentPage==maxPage-1?'disabled':'' }"
+                   th:href="@{/tasklist(page=${currentPage + 1})}"
+                > <span
+                        class="fas fa-forward-step"> > </span>
+                </a> <a class="btn btn-primary ${currentPage==maxPage-1?'disabled':'' }"
+                        th:href="@{/tasklist(page=${maxPage - 1 })}"
+            > <span
+                    class="fas fa-forward"> >></span>
+            </a>
+            </div>
+        </div>
+    </div>
     </form>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<!--<script>-->
+<!--    let id = $('#id').val();-->
+<!--    let title = $('#title').val();-->
+<!--    let content = $('#content').val();-->
+<!--    let status = $('#status').val();-->
+<!--    let data = {-->
+<!--        "id" : id,-->
+<!--        "title" : title,-->
+<!--        "content" : content,-->
+<!--        "status" : status-->
+<!--    }-->
+<!--    function newTask(){-->
+<!--        $.ajax({-->
+<!--            url: '/tasklist/update?id=${id}',-->
+<!--            type: 'POST',-->
+<!--            contentType: 'application/json',-->
+<!--            data: JSON.stringify(data),-->
+<!--            success: function (result) {-->
+<!--                alert("Bạn đã update  thành công")-->
+<!--            },-->
+<!--            error: function (error) {-->
+<!--                alert("Lỗi hệ thống, vui lòng thử lại sau")-->
+<!--            }-->
+<!--        })-->
+<!--    }-->
+
+<!--</script>-->
 </body>
 </html>

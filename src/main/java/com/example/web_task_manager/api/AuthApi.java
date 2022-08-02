@@ -3,8 +3,6 @@ package com.example.web_task_manager.api;
 import com.example.web_task_manager.dto.request.AuthRequest;
 import com.example.web_task_manager.dto.response.AuthResponse;
 import com.example.web_task_manager.entity.User;
-import com.example.web_task_manager.utils.JwtTokenFilter;
-import com.example.web_task_manager.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthApi {
     @Autowired
     AuthenticationManager authenticationManager;
-    @Autowired
-    JwtUtils jwtUtils;
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest){
         try{
@@ -33,8 +28,9 @@ public class AuthApi {
                             authRequest.getPassword())
             );
             User user = (User) authentication.getPrincipal();
-            String accessToken= jwtUtils.generateAccessToken(user);
+            String accessToken= "jwtUtils.generateAccessToken(user)";
             AuthResponse authResponse =  new AuthResponse(user.getUsername(),accessToken);
+            System.out.println(authentication);
             return ResponseEntity.ok(authResponse);
         }catch (BadCredentialsException e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

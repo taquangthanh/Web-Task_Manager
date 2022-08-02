@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/login")
-public class LoginController {
+public class LoginController extends BaseController {
     @Autowired
     private UserService userService;
 
@@ -29,7 +29,7 @@ public class LoginController {
         model.addAttribute("userDTO",new UserDTO());
         return "register";
     }
-//    @PostMapping("/login_success")
+    //    @PostMapping("/login_success")
 //    private String login(@ModelAttribute("userDTO") UserDTO userDTO, BindingResult result, Model model){
 //        if (result.hasErrors()){
 //            model.addAttribute("userDTO",userDTO);
@@ -66,7 +66,7 @@ public class LoginController {
             userService.save(userDTO);
             model.addAttribute("userDTO", userDTO);
             System.out.println("Successfully");
-            return "redirect:/tasklist";
+            return "redirect:/login";
         }else {
             model.addAttribute("userDTO", userDTO);
             System.out.println("Password is't same");
