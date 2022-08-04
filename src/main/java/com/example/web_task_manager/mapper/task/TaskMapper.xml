@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.web_task_manager.mapper.task.TaskMapper">
+
+    <resultMap id="result" type="com.example.web_task_manager.entity.TaskEntity">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="status" column="status"/>
+        <result property="createDate" column="create_date"/>
+        <result property="modifierDate" column="MODIFIER_DATE"/>
+        <result property="createBy" column="CREATE_BY"/>
+        <result property="modifierBy" column="MODIFIER_BY"/>
+        <result property="deleteFlag" column="DELETE_FLAG"/>
+    </resultMap>
+    <insert id="delete">
+        UPDATE tasks
+        SET content = #{task.content},
+            status  = #{task.status},
+            title   = #{task.title},
+            create_date = #{task.createDate},
+            MODIFIER_DATE = #{task.modifierDate},
+            CREATE_BY= #{task.createBy},
+            MODIFIER_BY=#{task.modifierBy},
+            DELETE_FLAG=#{task.deleteFlag}
+        WHERE id = #{task.id}
+    </insert>
+    <select id="findAll" resultType="com.example.web_task_manager.entity.TaskEntity">
+        select *
+        from tasks
+        where DELETE_FLAG = false
+    </select>
+    <insert id="insertAll">
+        insert into tasks
+        (title, content,
+         status, create_date, MODIFIER_DATE,
+         CREATE_BY, MODIFIER_BY, DELETE_FLAG)
+        values (#{title}, #{content},
+                #{status}, #{createDate}, #{modifierDate},
+                #{createBy}, #{modifierBy}, #{deleteFlag})
+
+    </insert>
+    <select id="findByTitle" resultType="com.example.web_task_manager.entity.TaskEntity">
+        select *
+        from tasks
+        where title = "%" + #{title} + "%"
+    </select>
+    <select id="findByStatus" resultType="com.example.web_task_manager.entity.TaskEntity">
+        select *
+        from tasks
+        where status = "%" + #{status} + "%"
+    </select>
+    <select id="findByDeleteFlag" resultType="com.example.web_task_manager.entity.TaskEntity">
+        select *
+        from tasks
+        where DELETE_FLAG = false
+    </select>
+    <select id="findById" resultType="com.example.web_task_manager.entity.TaskEntity">
+        select *
+        from tasks
+        where id = #{id} and DELETE_FLAG= false
+    </select>
+    <insert id="update">
+        UPDATE tasks
+        SET content = #{task.content},
+            status  = #{task.status},
+            title   = #{task.title},
+            create_date = #{task.createDate},
+            MODIFIER_DATE = #{task.modifierDate},
+            CREATE_BY= #{task.createBy},
+            MODIFIER_BY=#{task.modifierBy},
+            DELETE_FLAG=#{task.deleteFlag}
+        WHERE id = #{task.id}
+    </insert>
+    <select id="count" resultType="com.example.web_task_manager.entity.TaskEntity">
+        select count(*)
+        from tasks where DELETE_FLAG= false
+    </select>
+    <select id="findByTitleContaining" resultMap="result">
+        SELECT * FROM tasks WHERE title LIKE '%' #{title} '%' and DELETE_FLAG= false
+        <if test="page.paged">
+            limit #{page.offset}, #{page.pageSize}
+        </if>
+    </select>
+    <select id="countByTitle" resultType="int">
+        select count(*)
+        from tasks
+        where title = #{title} and DELETE_FLAG= false
+    </select>
+    <select id="findAllPage" resultMap="result">
+        SELECT * FROM tasks WHERE DELETE_FLAG= false
+        <if test="page.paged">
+            limit #{page.offset}, #{page.pageSize}
+        </if>
+    </select>
+    <select id="countAllTasks" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM tasks where DELETE_FLAG= false
+    </select>
+    <select id="countTasksFilterTitle" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM tasks
+        WHERE title LIKE '%' #{title} '%' and DELETE_FLAG= false
+    </select>
+    <select id="countTasksFilterTitleAndStatus" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM tasks
+        WHERE title LIKE '%' #{title} '%' and status = #{status.code} and DELETE_FLAG= false
+    </select>
+
+    <select id="findByTitleContainingAndTaskStatus" resultMap="result">
+        SELECT * FROM tasks WHERE UPPER(title) LIKE '%' #{title} '%' and status = #{status.code} and DELETE_FLAG= false OR LOWER(title) LIKE '%' #{title} '%' and status = #{status.code} and DELETE_FLAG= false
+        <if test="page.paged">
+            limit #{page.offset}, #{page.pageSize}
+        </if>
+    </select>
+    <select id="findByTaskStatus" resultMap="result">
+        SELECT * FROM tasks WHERE status = #{status.code} and DELETE_FLAG= false
+        <if test="page.paged">
+            limit #{page.offset}, #{page.pageSize}
+        </if>
+    </select>
+    <select id="countTasksFilterStatus" resultType="java.lang.Integer">
+        SELECT count(1) FROM tasks WHERE status = #{status.code} and DELETE_FLAG= false
+    </select>
+</mapper>

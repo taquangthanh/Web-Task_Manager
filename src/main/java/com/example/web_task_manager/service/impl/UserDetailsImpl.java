@@ -2,8 +2,7 @@ package com.example.web_task_manager.service.impl;
 
 
 import com.example.web_task_manager.entity.User;
-import com.example.web_task_manager.repository.UserRepository;
-import com.example.web_task_manager.utils.SessionUtil;
+import com.example.web_task_manager.mapper.user.UserMapper;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +20,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetailsService {
-    public final UserRepository userRepository;
+//    public final UserRepository userRepository;
+    private final UserMapper userMapper;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        User user = userMapper.findByUsername(username);
         return user;
     }
 }

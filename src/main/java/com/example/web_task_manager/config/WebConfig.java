@@ -41,7 +41,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable().authorizeRequests()
 
 
-                .antMatchers("/login/**").authenticated()
+                .antMatchers("/login/**").permitAll()
                 .and()
 
                 // Cấu hình trang đăng nhập
@@ -55,6 +55,5 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/login").invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID").permitAll();
 
-//        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

@@ -5,17 +5,20 @@
     <title>Web Task Manager</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="listTask.js"></script>
 </head>
 <body>
 <div class="container">
     <div class="card">
         <div class="card-header">
             <div class="col-3 fs-5">Web Task Manager
-                <span th:text="${userLogined.name }"></span>
+<!--                <span th:text="${userLogined.name }"></span>-->
                 <a th:href="@{/logout}" type="submit">Logout</a>
             </div>
             <div class="row d-flex justify-content-between">
-                <button class="col-2 btn btn-primary" style="width: 150px">Export CSV</button>
+                <a th:href="@{/tasklist/export}" class="col-2 btn btn-primary" style="width: 150px">Export CSV</a>
                 <div class="col-2 btn-add" style="width: 150px">
                     <button type="button" class="btn btn-success" data-bs-toggle="modal"
                             data-bs-target="#exampleModalAdd">
@@ -90,7 +93,7 @@
                                 th:name="status">
                             <option value="">All Task</option>
                             <option value="Open">Open</option>
-                            <option value="InProgress">In Process</option>
+                            <option value="Inprogress">In Process</option>
                             <option value="Done">Done</option>
                         </select>
                     </form>
@@ -105,7 +108,7 @@
                 <th colspan="3">Activity</th>
                 </thead>
                 <tbody>
-                <tr th:each="task,iState:${listtask}">
+                <tr th:each="task,iState:${task}">
                     <td th:utext="${task.title }">Name</td>
                     <td th:utext="${task.status }">Name</td>
                     <td>
@@ -114,129 +117,53 @@
                         </a>
                     </td>
                     <td><!-- Button trigger modal -->
-                        <a th:href="@{/tasklist/detail(id=${task.id })}" type="button" class="btn btn-primary"
-                           data-bs-toggle="modal"
-                           data-bs-target="#staticBackdrop">
+                        <a th:href="@{/tasklist/detail(id=${task.id })}" type="button" class="btn btn-primary">
                             Detail
                         </a>
 
-                        <!-- Detail Modal -->
-                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="staticBackdropLabel">Detail Task</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <h2 th:utext="${task.title }"></h2><br>
-                                        <h2 th:utext="${task.status }"></h2><br>
-                                        <h2 th:utext="${task.content }"></h2>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                        </button>
-                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </td>
                     <td>
-                        <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#exampleModalDelete">
-                            Delete
-                        </button>
-
-                        <!--Delete Modal -->
-                        <div class="modal fade" id="exampleModalDelete" tabindex="-1"
-                             aria-labelledby="exampleModalLabel"
-                             aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Confirm Delete</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        You sure delete it ?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                        </button>
-                                        <a th:href="@{/tasklist/delete(id=${task.id })}" type="button"
-                                           class="btn btn-primary">Right</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <button type="button" class="delete-btn btn btn-danger" th:id="'delete-task-btn-' + ${task.id}">Delete</button>
                     </td>
                 </tr>
                 </tbody>
             </table>
-        </div>
-        <div class="card-footer">
-            <div class="d-flex justify-content-center">
-                <a class="btn btn-primary mr-1 ${currentPage==0?'disabled':'' }" th:href="@{/tasklist?page=0}"
-                > <span
-                        class="fas fa-backward"><<</span>
-                </a> <a class="btn btn-primary mr-1 ${currentPage==0?'disabled':'' }"
-                        th:href="@{/tasklist(name=${title},page=${currentPage - 1})}"
-            > <span
-                    class="fas fa-backward-step"><</span>
-            </a>
-                <h3 th:utext="${currentPage+1 }"></h3>
-                <h3>/</h3>
-                <h3 th:utext="${maxPage }"></h3>
-                <a class="btn btn-primary mr-1 ${currentPage==maxPage-1?'disabled':'' }"
-                   th:href="@{/tasklist(page=${currentPage + 1})}"
-                > <span
-                        class="fas fa-forward-step"> > </span>
-                </a> <a class="btn btn-primary ${currentPage==maxPage-1?'disabled':'' }"
-                        th:href="@{/tasklist(page=${maxPage - 1 })}"
-            > <span
-                    class="fas fa-forward"> >></span>
-            </a>
+            <!--            popup-->
+            <div class="modal popup" tabindex="-1" style="position: fixed; top: 20%; display: none; z-index: 1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Xác nhận xóa</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Bạn có chắc chắn muốn xóa task không?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="cancel-delete" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <a id="confirm-delete" type="button" class="btn btn-primary" href="#">Xác nhận</a>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+        <div class="card-footer text-muted">
+            <nav aria-label="Page navigation" class="float-right">
+                <a class="btn" th:classappend="${task.number <= 0 ? 'disabled' : ''}" th:href="@{/tasklist(page=${task.number}, title=${#request.getParameter('title')}, status=${#request.getParameter('status')})}"><<</a>
+                <a class="btn" th:if="${task.number == task.totalPages - 1 && task.totalPages >= 3}" th:href="@{/tasklist(page=${task.number - 1}, title=${#request.getParameter('title')}, status=${#request.getParameter('status')})}" th:text="${task.number - 1}"></a>
+                <a class="btn" th:if="${task.number - 1 >= 0}"  th:href="@{/tasklist(page=${task.number}, title=${#request.getParameter('title')}, status=${#request.getParameter('status')})}" th:text="${task.number}" ></a>
+                <a class="btn disabled" th:if="${task.number <= task.totalPages}" th:href="@{/tasklist(page=${task.number + 1}, title=${#request.getParameter('title')}, status=${#request.getParameter('status')})}" th:text="${task.number + 1}"></a>
+                <a class="btn" th:if="${(task.number + 2 <= task.totalPages)}" th:href="@{/tasklist(page=${task.number + 2}, title=${#request.getParameter('title')}, status=${#request.getParameter('status')})}" th:text="${task.number + 2}"></a>
+                <a class="btn" th:if="${(task.number == 0) && (task.totalPages >= 3)}" th:href="@{/tasklist(page=${task.number + 3}, title=${#request.getParameter('title')}, status=${#request.getParameter('status')})}" th:text="${task.number + 3}"></a>
+                <a class="btn" th:classappend="${task.number < task.totalPages - 1 ? '' : 'disabled'}" th:href="@{/tasklist(page=${task.number + 2}, title=${#request.getParameter('title')}, status=${#request.getParameter('status')})}">>></a>
+            </nav>
         </div>
     </div>
     </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
-<!--<script>-->
-<!--    let id = $('#id').val();-->
-<!--    let title = $('#title').val();-->
-<!--    let content = $('#content').val();-->
-<!--    let status = $('#status').val();-->
-<!--    let data = {-->
-<!--        "id" : id,-->
-<!--        "title" : title,-->
-<!--        "content" : content,-->
-<!--        "status" : status-->
-<!--    }-->
-<!--    function newTask(){-->
-<!--        $.ajax({-->
-<!--            url: '/tasklist/update?id=${id}',-->
-<!--            type: 'POST',-->
-<!--            contentType: 'application/json',-->
-<!--            data: JSON.stringify(data),-->
-<!--            success: function (result) {-->
-<!--                alert("Bạn đã update  thành công")-->
-<!--            },-->
-<!--            error: function (error) {-->
-<!--                alert("Lỗi hệ thống, vui lòng thử lại sau")-->
-<!--            }-->
-<!--        })-->
-<!--    }-->
-
-<!--</script>-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous">
+</script>
 </body>
 </html>

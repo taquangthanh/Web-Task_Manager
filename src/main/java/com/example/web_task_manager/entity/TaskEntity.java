@@ -9,13 +9,8 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Builder
-@Table(name = "tasks")
 public class TaskEntity extends Base {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "task_id")
     private Long id;
     private String title;
     private String content;

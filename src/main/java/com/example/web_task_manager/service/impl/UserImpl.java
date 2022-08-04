@@ -2,8 +2,7 @@ package com.example.web_task_manager.service.impl;
 
 import com.example.web_task_manager.dto.request.UserDTO;
 import com.example.web_task_manager.entity.User;
-import com.example.web_task_manager.repository.RoleResponsitory;
-import com.example.web_task_manager.repository.UserRepository;
+import com.example.web_task_manager.mapper.user.UserMapper;
 import com.example.web_task_manager.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,23 +16,25 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class UserImpl implements UserService {
 
+    //    @Autowired
+//    private RoleResponsitory roleResponsitory;
+//    @Autowired
+//    private UserRepository userRepository;
     @Autowired
-    private RoleResponsitory roleResponsitory;
-    @Autowired
-    private UserRepository userRepository;
+    private UserMapper userMapper;
 
     @Override
     public User findByMail(String username) {
-        return userRepository.findByUsername(username);
+        return userMapper.findByUsername(username);
     }
 
     @Override
-    public User save(UserDTO userDTO) {
+    public void save(UserDTO userDTO) {
         User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setName(userDTO.getName());
         user.setPassword(userDTO.getPassword());
-        user.setRoles(Arrays.asList(roleResponsitory.findByName("ADMIN")));
-        return userRepository.save(user);
+//       user.setRoles(Arrays.asList(roleResponsitory.findByName("ADMIN")));
+        userMapper.insertAll(user);
     }
 }

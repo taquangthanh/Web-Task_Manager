@@ -52,41 +52,5 @@
     </div>
 
 </div>
-<script th:inline="javascript">
-    document.querySelector('.btn').onclick = function (){
-        var email = document.querySelector('.email').value,
-            password = document.querySelector('.pass').value;
-
-        if(email<3 || email>256){
-            console.log("Email sai");
-            alert("Email sai")
-        }
-        if(pass<8 || pass>256){
-            console.log("pass sai");
-            alert("pass sai")
-        }
-    }
-    function login(){
-        let email = $('#username').val();
-        let password = $('#password').val();
-        let data = {
-            "email" : email,
-            "password" : password,
-        }
-        $.ajax({
-            url: '/api/login',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function (result) {
-                alert("Bạn đã đăng nhập thành công")
-            },
-            error: function (error) {
-                alert("Lỗi hệ thống, vui lòng thử lại sau")
-            }
-        })
-    }
-
-</script>
 </body>
 </html>

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
+
 @Controller
 @RequestMapping("/login")
 public class LoginController extends BaseController {
@@ -29,25 +31,8 @@ public class LoginController extends BaseController {
         model.addAttribute("userDTO",new UserDTO());
         return "register";
     }
-    //    @PostMapping("/login_success")
-//    private String login(@ModelAttribute("userDTO") UserDTO userDTO, BindingResult result, Model model){
-//        if (result.hasErrors()){
-//            model.addAttribute("userDTO",userDTO);
-//            System.out.println("Khong co gi");
-//            result.toString();
-//            return "login";
-//        }
-//        User user = userService.findByMail(userDTO.getUsername());
-//        System.out.println(user);
-//        if(user.getPassword().equals(userDTO.getPassword())){
-//            System.out.println("Đăng nhập thành công");
-////            model.addAttribute("admin",admin);
-//            return "redirect:/tasklist";
-//        }
-//        return "redirect:";
-//    }
     @PostMapping("/register-new")
-    private String newUser( @ModelAttribute("userDTO") UserDTO userDTO, BindingResult result, Model model){
+    private String newUser(@Valid @ModelAttribute("userDTO") UserDTO userDTO, BindingResult result, Model model){
         if (result.hasErrors()){
             model.addAttribute("userDTO",userDTO);
             result.toString();
@@ -63,6 +48,7 @@ public class LoginController extends BaseController {
         if (userDTO.getPassword().equalsIgnoreCase(userDTO.getRepeatPassword())){
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             userDTO.setPassword(encoder.encode(userDTO.getPassword()));
+            System.out.println(userDTO.getUsername());
             userService.save(userDTO);
             model.addAttribute("userDTO", userDTO);
             System.out.println("Successfully");

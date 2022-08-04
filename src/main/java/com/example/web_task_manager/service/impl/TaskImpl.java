@@ -1,27 +1,30 @@
 package com.example.web_task_manager.service.impl;
 
 import com.example.web_task_manager.dto.request.TaskRequest;
-import com.example.web_task_manager.dto.response.TaskResponse;
 import com.example.web_task_manager.entity.TaskEntity;
-import com.example.web_task_manager.repository.TaskRepository;
+import com.example.web_task_manager.entity.TaskStatus;
+import com.example.web_task_manager.mapper.task.TaskMapper;
 import com.example.web_task_manager.service.TaskService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TaskImpl implements TaskService {
 
-    @Autowired
-    private TaskRepository taskRepository;
+
+    private final TaskMapper taskMapper;
+
+    public TaskImpl(TaskMapper taskMapper) {
+        this.taskMapper = taskMapper;
+    }
 
     @Override
-    public TaskEntity addTask(TaskRequest taskRequest) {
+    public void addTask(TaskRequest taskRequest) {
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setTitle(taskRequest.getTitle());
         taskEntity.setContent(taskRequest.getContent());
@@ -31,15 +34,12 @@ public class TaskImpl implements TaskService {
         taskEntity.setModifierBy("Admin");
         taskEntity.setDeleteFlag(false);
         taskEntity.setModifierDate(new Timestamp(System.currentTimeMillis()));
-        TaskResponse taskResponse =new TaskResponse();
-        return taskRepository.save(taskEntity);
+        taskMapper.insertAll(taskEntity);
     }
 
     @Override
-    public TaskEntity updateTask(Long id,TaskRequest taskRequest) {
-        Optional<TaskEntity> task = taskRepository.findById(id);
-        if(task.isPresent()){
-            TaskEntity taskEntity = task.get();
+    public void updateTask(Long id,TaskRequest taskRequest) {
+        TaskEntity taskEntity = taskMapper.findById(id);
             taskEntity.setTitle(taskRequest.getTitle() == null?taskEntity.getTitle() : taskRequest.getTitle());
             taskEntity.setContent(taskRequest.getContent() == null?taskEntity.getContent() : taskRequest.getContent());
             taskEntity.setStatus(taskRequest.getStatus() == null?taskEntity.getStatus() : taskRequest.getStatus());
@@ -48,50 +48,79 @@ public class TaskImpl implements TaskService {
             taskEntity.setModifierBy("Admin");
             taskEntity.setDeleteFlag(false);
             taskEntity.setModifierDate(new Timestamp(System.currentTimeMillis()));
-            return taskRepository.save(taskEntity);
-        }
-        return null;
+        taskMapper.update(taskEntity);
+
     }
 
     @Override
-    public TaskEntity deleteTask(Long id) {
-        Optional<TaskEntity> task = taskRepository.findById(id);
-        if(task.isPresent()){
-            TaskEntity taskEntity = task.get();
-            taskEntity.setTitle(taskEntity.getTitle());
-            taskEntity.setContent(taskEntity.getContent());
-            taskEntity.setStatus(taskEntity.getStatus());
-            taskEntity.setCreateBy("Admin");
-            taskEntity.setCreateDate(taskEntity.getCreateDate());
-            taskEntity.setModifierBy("Admin");
-            taskEntity.setDeleteFlag(true);
-            taskEntity.setModifierDate(new Timestamp(System.currentTimeMillis()));
-            return taskRepository.save(taskEntity);
-        }
-        return null;
+    public void deleteTask(Long id) {
+        TaskEntity taskEntity = taskMapper.findById(id);
+        taskEntity.setDeleteFlag(true);
+        taskMapper.delete(taskEntity);
     }
 
     @Override
     public TaskEntity getById(Long id) {
-        Optional<TaskEntity> task = taskRepository.findById(id);
-        if(task.isPresent()){
-            return task.get();
+        return taskMapper.findById(id);
+    }
+
+    @Override
+    public List<TaskEntity> getTasksByTitle(String title) {
+        return taskMapper.findByTitle("%" + title + "%");
+    }
+
+    @Override
+    public List<TaskEntity> getTasksByStatus(String status) {
+        return taskMapper.findByStatus( "%" + status + "%");
+    }
+    @Override
+    public List<TaskEntity> getTasksByFlag() {
+        return taskMapper.findByDeleteFlag();
+    }
+
+    @Override
+    public List<TaskEntity> findAll() {
+        return taskMapper.findAll();
+    }
+
+    @Override
+    public Page<TaskEntity> findTasks(Optional<Integer> page, Optional<String> title, Optional<String> status) {
+        int currentPage = page.orElse(1);
+        currentPage = Math.max(1, currentPage);
+        Pageable pageable = PageRequest.of(currentPage - 1, 5);
+        if (title.isPresent() && !title.get().equals("") && (status.isEmpty() || status.get().equals(""))) {
+            List<TaskEntity> tasks = taskMapper.findByTitleContaining(title.get(), pageable);
+            Integer countTasks = taskMapper.countTasksFilterTitle(title.get());
+            return new PageImpl<>(tasks, pageable, countTasks);
+        } else if (status.isPresent() && !status.get().equals("") && (title.isEmpty() || title.get().equals(""))) {
+            String parseStatus = status.get().replaceAll("-", " ");
+            var optionalTaskStatus = Arrays.stream(TaskStatus.values()).filter(s -> s.getCode().equals(parseStatus)).findFirst();
+            if (optionalTaskStatus.isPresent()) {
+                List<TaskEntity> tasks = taskMapper.findByTaskStatus(optionalTaskStatus.get(), pageable);
+                Integer countTasks = taskMapper.countTasksFilterStatus(optionalTaskStatus.get());
+                return new PageImpl<>(tasks, pageable, countTasks);
+            } else {
+                List<TaskEntity> tasks = taskMapper.findAllPage(pageable);
+                Integer countTasks = taskMapper.countAllTasks();
+                return new PageImpl<>(tasks, pageable, countTasks);
+            }
+        } else if (status.isPresent() && !status.get().equals("") && title.isPresent() && !title.get().equals("")) {
+            String parseStatus = status.get().replaceAll("-", " ");
+            var optionalTaskStatus = Arrays.stream(TaskStatus.values()).filter(s -> s.getCode().equals(parseStatus)).findFirst();
+            if (optionalTaskStatus.isPresent()) {
+                List<TaskEntity> tasks = taskMapper.findByTitleContainingAndTaskStatus(title.get(), optionalTaskStatus.get(), pageable);
+                Integer countTasks = taskMapper.countTasksFilterTitleAndStatus(title.get(), optionalTaskStatus.get());
+                return new PageImpl<>(tasks, pageable, countTasks);
+            } else {
+                List<TaskEntity> tasks = taskMapper.findByTitleContaining(title.get(), pageable);
+                Integer countTasks = taskMapper.countTasksFilterTitle(title.get());
+                return new PageImpl<>(tasks, pageable, countTasks);
+            }
+        } else {
+            List<TaskEntity> tasks = taskMapper.findAllPage(pageable);
+            Integer countTasks = taskMapper.countAllTasks();
+            return new PageImpl<>(tasks, pageable, countTasks);
         }
-        return null;
     }
 
-    @Override
-    public Page<TaskEntity> getTasksByTitle(String title, Integer page) {
-        return taskRepository.findByTitle("%" + title + "%", PageRequest.of(page, 5));
-    }
-
-    @Override
-    public Page<TaskEntity> getTasksByStatus(String status, Integer page) {
-        return taskRepository.findByStatus( "%" + status + "%", PageRequest.of(page, 5));
-    }
-
-    @Override
-    public Page<TaskEntity> getTasksByFlag(Integer page) {
-        return taskRepository.findByDeleteFlag(PageRequest.of(page, 5));
-    }
 }
